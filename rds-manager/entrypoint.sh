@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/usr/bin/python /code/manage.py runserver 0.0.0.0:8000
+/usr/local/bin/python /code/manage.py runserver 0.0.0.0:8000
 

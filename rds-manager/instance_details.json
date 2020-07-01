@@ -1,0 +1,16 @@
+[
+    {
+        "ENDPOINT": "mysqldb.123456789012.us-east-1.rds.amazonaws.com",
+        "PORT": "3306",
+        "USER": "tushar",
+        "REGION":"us-east-1",
+        "DBNAME":"mysql"
+    },
+    {
+        "ENDPOINT": "mysqldb.123456789012.us-east-1.rds.amazonaws.com",
+        "PORT": "3306",
+        "USER": "tushar",
+        "REGION":"us-east-1",
+        "DBNAME":"postgres"
+    }
+]
