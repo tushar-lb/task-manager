@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-manager
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kube-manager
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: kube-manager
+subjects:
+- kind: ServiceAccount
+  name: kube-manager
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: kube-manager
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-manager
+  labels:
+    app: kube-manager
+spec:
+  type: NodePort
+  selector:
+    app: kube-manager
+  ports:
+    - name: kube-manager
+      protocol: TCP
+      port: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-manager
+spec:
+  selector:
+    matchLabels:
+      app: kube-manager
+  replicas: 1
+  minReadySeconds: 0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: kube-manager
+    spec:
+      serviceAccountName: kube-manager
+      containers:
+      - name: kube-manager
+        image: tusharraut/kube-manager:1.0.0
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /app
+            port: 8000
+          initialDelaySeconds: 10
+          timeoutSeconds: 120
+          periodSeconds: 20
+        ports:
+          - name: kube-manager
+            containerPort: 8000
+        securityContext:
+            privileged: true
+      restartPolicy: Always

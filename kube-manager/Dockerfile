@@ -1,21 +1,19 @@
-FROM centos:7
+FROM python:3.8
 
-ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
 WORKDIR /code
 ADD requirements.txt /code/
-RUN yum update -y
-RUN yum -y install epel-release && yum clean all
-RUN yum -y install python-pip && yum clean all
-RUN yum -y install openssl
-RUN yum install -y vim
-RUN yum install -y redis
-RUN pip install kubernetes
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-RUN yum -y install wget
 ADD . /code/
 COPY entrypoint.sh /code/entrypoint.sh
+
+RUN apt-get update -y && apt-get install -y apt-transport-https
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update -y
+RUN apt-get install -y kubectl
+RUN apt-get install dnsutils -y
 
 EXPOSE 8000
 

@@ -1,13 +1,11 @@
-django==1.10.5
+django
 djangorestframework
 django-rest-swagger
 ConfigParser
 configparser
-redis
-rq
 ruamel_yaml
-pymysql
 coreapi
 django-sslserver
 pytz
 pyping
+kubernetes
