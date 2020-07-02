@@ -1,0 +1,35 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sql-command-runner
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: sql-command-runner
+            image: byrnedo/alpine-curl:0.1.3
+            env:
+              - name: DB_AUTH_TOKEN
+                value: "DB_AUTH_TOKEN_VALUE"
+            command:
+              - "/bin/sh"
+              - "-ec"
+              - |
+                set -o nounset
+                set -o errexit
+                echo "Starting sql command"
+                curl -s -X POST --token $DB_AUTH_TOKEN API_ENDPOINT_TO_START_SQL_COMMANDS
+                echo
+                # Wait for sql command to complete
+                while : ;
+                do
+                    STATUS=$(API_TO_CHECK_SQL_COMMAND_STATUS)
+                    echo "$(date) SQL command execute status is ${STATUS}"
+                    [[ "${STATUS}" = "Running" ]] && sleep 60s || break
+                done
+                echo "SQL COMMAND COMPLETED"
+                echo
+          restartPolicy: OnFailure
