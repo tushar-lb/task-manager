@@ -5,7 +5,7 @@ from datetime import datetime
 import subprocess
 from time import sleep
 
-TIMEOUT=50
+TIMEOUT=300
 
 def get_pid(name):
     return check_output(["pidof",name])
